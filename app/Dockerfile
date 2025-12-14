@@ -10,28 +10,33 @@ WORKDIR /app
 COPY requirements.txt .
 
 RUN pip install --upgrade pip
-RUN pip install --prefix=/install -r requirements.txt
+RUN pip install -r requirements.txt
 
 COPY src/ ./src/
+COPY alembic.ini /app/
+COPY migrations/ /app/migrations/
 
 # TEST
 FROM builder AS test
 
 ENV PYTHONPATH=/app/src
 
-RUN pip install pytest
-RUN pytest src/tests/
+RUN pip install pytest pytest-flask
+
+RUN pytest src/tests/ --maxfail=1 --disable-warnings -v
 
 # FINAL
 FROM python:3.12-slim AS final
 
 WORKDIR /app
 
-COPY --from=builder /install /usr/local
+COPY --from=builder /usr/local /usr/local
+COPY --from=builder /app/src/ ./src/
+COPY --from=builder /app/migrations/ ./migrations/
+COPY --from=builder /app/alembic.ini ./alembic.ini
 
-COPY src/ ./src/
-
-ENV FLASK_APP=src/app.py
+ENV PYTHONPATH=/app/src
+ENV FLASK_APP=app
 ENV FLASK_RUN_HOST=0.0.0.0
 
 EXPOSE 5000
