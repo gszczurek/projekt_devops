@@ -32,3 +32,14 @@ def test_create_user(client):
     res = client.post("/users", json=payload)
     assert res.status_code == 201
     assert res.json["email"] == "john@example.com"
+
+def test_get_users(client):
+    client.post("/users", json={"name": "Alice", "email": "alice@example.com"})
+    client.post("/users", json={"name": "Bob", "email": "bob@example.com"})
+
+    res = client.get("/users")
+    assert res.status_code == 200
+    data = res.json
+    assert len(data) == 2
+    assert data[0]["name"] == "Alice"
+    assert data[1]["name"] == "Bob"
