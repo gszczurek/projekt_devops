@@ -1,7 +1,7 @@
 import pytest
 from src.app import create_app
 from src.db import db
-from models import User
+from src.models import User
 
 @pytest.fixture
 def app():
