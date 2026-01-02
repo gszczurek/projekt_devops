@@ -45,7 +45,7 @@ services:
     networks:
       - back_net
     volumes:
-      - ./app/seed_output/:/app/seed/output
+      - seed_output/:/app/seed/output
     environment:
       DATABASE_URL: postgresql://postgres:root123@db:5432/app_db
     command: python -m seed.run_seed
