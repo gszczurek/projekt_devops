@@ -1,0 +1,15 @@
+# Virtual environment
+.venv/
+__pycache__/
+
+# Python bytecode
+*.pyc
+*.pyo
+
+# Docker volumes / logs
+seed_output/
+db_data/
+nginx_logs/
+
+# Env files
+.env
